@@ -1,0 +1,146 @@
+﻿@model HotelManagementSystem.Models.AccomodationPackage
+@{
+    ViewBag.Title = "AccomodationPackageDetails";
+}
+
+
+@{
+    var thumbnailPicture = Model.Pictures != null ? Model.Pictures.FirstOrDefault() : null;
+    var thumbnailURL = thumbnailPicture != null ? Url.Content(thumbnailPicture.Url) : "/images/img_bg_5.jpg";
+}
+
+<aside id="colorlib-hero">
+    <div class="flexslider">
+        <ul class="slides">
+            <li style="background-image: url(@thumbnailURL);">
+                <div class="overlay"></div>
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6 col-sm-12 col-md-offset-3 slider-text">
+                            <div class="slider-text-inner slider-text-inner2 text-center">
+                                <h2>Accomodation Package</h2>
+                                <h1>@Model.Name</h1>
+                                <h2>@Model.AccomodationType.Name</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</aside>
+<div id="colorlib-amenities">
+    <div class="container">
+        <div class="row">
+            <div class="amenities-flex">
+                <div class="desc animate-box">
+                    <p class="price">
+                        <span class="currency">$</span>
+                        <span class="price-room">
+                            @Model.FeePerNight
+                        </span>
+                        <span class="per">/ per night</span>
+                    </p>
+                    <strong>Rooms: @Model.NoOfRoom</strong>
+                    <p>
+                        @Model.AccomodationType.Description
+                    </p>
+                </div>
+                <div class="amenities-img animate-box" style="height:400px; background-image: url(@thumbnailURL);"></div>
+
+                @if (Model.Pictures != null && Model.Pictures.Count() > 0)
+                {
+                    foreach (var picture in Model.Pictures.Where(x=> x!= thumbnailPicture))
+                    {
+                        <div class="amenities-img animate-box" style="height:400px; background-image: url(@Url.Content(picture.Url));"></div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="colorlib-contact">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10 col-md-offset-1 animate-box">
+                <h3>Confirm Booking</h3>
+                
+            </div>
+            <div class="col-md-10 col-md-offset-1 animate-box">
+                <h3>Get In Touch</h3>
+                <form  id="checkAvailabilityForm">
+                    <div class="row form-group">
+                        <div class="col-md-6">
+                            <label for="FromDate">Check In Date</label>
+                            <input type="text" id="FromDate" name="FromDate" class="form-control" placeholder="Enter Check In Date" autocomplete="off">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="Duration">Duration of Stay Nights</label>
+                            <select id="Duration" name="Duration" class="form-control">
+                                @for (int i = 1; i <= 10; i++)
+                                {
+                                    <option value="@i">@i</option>
+                                }
+                            </select>
+
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-6">
+                            <label for="NoOfAdults">No of Adults</label>
+                            <input type="number" id="NoOfAdults" name="NoOfAdults" class="form-control" placeholder="No of Adults" value="1" max="10" min="1">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="NoOfChildren">No of Children</label>
+                            <input type="number" id="NoOfChildren" name="NoOfChildren" class="form-control" placeholder="No of Children" value="0" max="10" min="1">
+                        </div>
+
+                    </div>
+                    
+                    <div class="row form-group">
+                        <div class="col-md-6">
+                            <label for="Name">Guest Name</label>
+                            <input type="text" id="Name" name="Name" class="form-control" placeholder="Guest Name">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="Email">Email</label>
+                            <input type="text" id="Email" name="Email" class="form-control" placeholder="Your email address">
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col-md-12">
+                            <label for="Notes">Add Special Notes</label>
+                            <textarea name="Notes" id="Notes" cols="30" rows="10" class="form-control" placeholder="Add Special Notes"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group text-center">
+                        <input type="button" id="checkAvailability" value="Check Availability" class="btn btn-primary">
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts
+{
+    <script>
+        $('#FromDate').datepicker({
+            format: 'mm/dd/yyyy',
+            startDate: '+3d'
+        });
+
+        $("#checkAvailability").click(function() {
+            $.ajax({
+                url: '@Url.Action("CheckAvailability","Home")',
+                data: $("#checkAvailabilityForm").serialize()
+            }).done(function() {
+                alert("geche");
+            });
+        });
+
+
+    </script>
+}
